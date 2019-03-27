@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t kamforka/client-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run kamforka/client-test npm test -- --coverage
+
+after_success:
+  - docker build -t kamforka/multi-client ./client
+  - docker build -t kamforka/multi-nginx ./nginx
+  - docker build -t kamforka/multi-server ./server
+  - docker build -t kamforka/multi-worker ./worker
+  # Log in to docker hub
+  - echo $DOCKER_PASSWORD | docker login -u $DOCKER_ID --password-stdin
+  # Push images to docker hub
+  - docker push kamforka/multi-client
+  - docker push kamforka/multi-nginx
+  - docker push kamforka/multi-server
+  - docker push kamforka/multi-worker
