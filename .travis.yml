@@ -14,7 +14,7 @@ after_success:
   - docker build -t kamforka/multi-server ./server
   - docker build -t kamforka/multi-worker ./worker
   # Log in to docker hub
-  - echo $DOCKER_PASSWORD | docker login -u $DOCKER_ID --password-stdin
+  - docker login -u $DOCKER_ID -p $DOCKER_PASSWORD 
   # Push images to docker hub
   - docker push kamforka/multi-client
   - docker push kamforka/multi-nginx
